@@ -30,8 +30,6 @@ func Unpack(str string) (string, error) {
 
 			if unicode.IsDigit(prevC) {
 				return "", ErrInvalidString
-			} else if prevC == 92 {
-				continue
 			}
 
 			repeat, _ := strconv.Atoi(currC)
