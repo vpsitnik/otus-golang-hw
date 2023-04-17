@@ -12,9 +12,7 @@ var ErrInvalidString = errors.New("invalid string")
 func Unpack(str string) (string, error) {
 	var unpackedStr strings.Builder
 	rStr := []rune(str)
-
 	for index, char := range rStr {
-
 		currC := string(char)
 		var nextC rune
 		res := ""
@@ -24,7 +22,6 @@ func Unpack(str string) (string, error) {
 		}
 
 		if unicode.IsDigit(char) {
-
 			if index == 0 {
 				return "", ErrInvalidString
 			}
@@ -40,13 +37,11 @@ func Unpack(str string) (string, error) {
 			repeat, _ := strconv.Atoi(currC)
 
 			res = strings.Repeat(string(prevC), repeat)
-
 		} else if !unicode.IsDigit(nextC) {
 			res = currC
 		}
 
 		unpackedStr.WriteString(res)
-
 	}
 
 	return unpackedStr.String(), nil
