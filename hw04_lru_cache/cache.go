@@ -59,7 +59,8 @@ func (cache *lruCache) Clear() {
 	cache.mutex.Lock()
 	defer cache.mutex.Unlock()
 
-	*cache = *(NewCache(cache.capacity).(*lruCache))
+	cache.queue = NewList()
+	cache.items = make(map[Key]*ListItem, cache.capacity)
 }
 
 func NewCache(capacity int) Cache {
