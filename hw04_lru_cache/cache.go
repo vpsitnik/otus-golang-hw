@@ -24,24 +24,25 @@ func (cache *lruCache) Set(key Key, value interface{}) bool {
 		// clear last
 		last := cache.queue.Back()
 		cache.queue.Remove(last)
-		delete(cache.items, last.Value.(itemCache).key)
+		delete(cache.items, last.Value.(*itemCache).key)
 	}
 
 	if item, ok := cache.items[key]; ok {
 		// exist
-		item.Value = itemCache{key, value}
+		item.Value = &itemCache{key, value}
 		cache.queue.MoveToFront(item)
 		return true
 	}
 
 	// add new
-	cache.items[key] = cache.queue.PushFront(itemCache{key, value})
+	cache.items[key] = cache.queue.PushFront(&itemCache{key, value})
 	return false
 }
 
 func (cache *lruCache) Get(key Key) (interface{}, bool) {
 	if item, ok := cache.items[key]; ok {
-		return item.Value.(itemCache).value, true
+		cache.queue.MoveToFront(item)
+		return item.Value.(*itemCache).value, true
 	}
 	return nil, false
 }
