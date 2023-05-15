@@ -48,4 +48,19 @@ func TestList(t *testing.T) {
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
 	})
+
+	t.Run("complex two list", func(t *testing.T) {
+		l1 := NewList()
+		l2 := NewList()
+
+		l1.PushFront(10) // [10]
+		l1.PushFront(20) // [20, 10]
+		l1.PushFront(30) // [30, 20, 10]
+
+		l2.PushBack(30) // [30]
+		l2.PushBack(20) // [30, 20]
+		l2.PushBack(10) // [30, 20, 10]
+
+		require.Equal(t, l1, l2)
+	})
 }
