@@ -49,14 +49,76 @@ func TestCache(t *testing.T) {
 		require.Nil(t, val)
 	})
 
+	t.Run("negative", func(t *testing.T) {
+		c := NewCache(5)
+
+		_ = c.Set("aaa", 100)
+		_ = c.Set("bbb", 200)
+
+		val, ok := c.Get("ccc")
+		require.False(t, ok)
+		require.Nil(t, val)
+	})
+
+	t.Run("clear logic", func(t *testing.T) {
+		c := NewCache(10)
+		c.Set("ccc", 500)
+		c.Set("ddd", 100)
+
+		val, ok := c.Get("ccc")
+		require.True(t, ok)
+		require.Equal(t, 500, val)
+
+		c.Clear()
+
+		val, ok = c.Get("ccc")
+		require.False(t, ok)
+		require.Nil(t, val)
+
+		val, ok = c.Get("ddd")
+		require.False(t, ok)
+		require.Nil(t, val)
+	})
+
 	t.Run("purge logic", func(t *testing.T) {
-		// Write me
+		c := NewCache(3)
+		c.Set("aaa", 300)
+		c.Set("bbb", 100)
+		c.Set("ccc", 200)
+
+		val, ok := c.Get("aaa")
+		require.True(t, ok)
+		require.Equal(t, 300, val)
+
+		val, ok = c.Get("bbb")
+		require.True(t, ok)
+		require.Equal(t, 100, val)
+
+		c.Set("ddd", 400)
+
+		val, ok = c.Get("ddd")
+		require.True(t, ok)
+		require.Equal(t, 400, val)
+
+		val, ok = c.Get("ccc")
+		require.False(t, ok)
+		require.Nil(t, val)
+
+		c.Set("eee", 500)
+		c.Set("ccc", 600)
+
+		val, ok = c.Get("aaa")
+		require.False(t, ok)
+		require.Nil(t, val)
+
+		val, ok = c.Get("ccc")
+		require.True(t, ok)
+		require.Equal(t, 600, val)
 	})
 }
 
 func TestCacheMultithreading(t *testing.T) {
-	t.Skip() // Remove me if task with asterisk completed.
-
+	_ = t
 	c := NewCache(10)
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
