@@ -7,7 +7,7 @@ import (
 )
 
 // Change to true if needed.
-var taskWithAsteriskIsCompleted = false
+var taskWithAsteriskIsCompleted = true
 
 var text = `Как видите, он  спускается  по  лестнице  вслед  за  своим
 	другом   Кристофером   Робином,   головой   вниз,  пересчитывая
@@ -43,9 +43,16 @@ var text = `Как видите, он  спускается  по  лестни�
 	посидеть у огня и послушать какую-нибудь интересную сказку.
 		В этот вечер...`
 
+var text2 = `вечер слово я Я я я.	ты слово слова один
+здесь трава он ты ты вечер тропа слово два три Я - здесь`
+
 func TestTop10(t *testing.T) {
 	t.Run("no words in empty string", func(t *testing.T) {
 		require.Len(t, Top10(""), 0)
+	})
+
+	t.Run("no words, but with delimeters", func(t *testing.T) {
+		require.Len(t, Top10("\n\r"), 1)
 	})
 
 	t.Run("positive test", func(t *testing.T) {
@@ -78,5 +85,20 @@ func TestTop10(t *testing.T) {
 			}
 			require.Equal(t, expected, Top10(text))
 		}
+	})
+	t.Run("positive test2", func(t *testing.T) {
+		expected := []string{
+			"я",     // 5
+			"слово", // 3
+			"ты",    // 3
+			"вечер", // 2
+			"здесь", // 2
+			"два",   // 1
+			"один",  // 1
+			"он",    // 1
+			"слова", // 1
+			"трава", // 1
+		}
+		require.Equal(t, expected, Top10(text2))
 	})
 }
