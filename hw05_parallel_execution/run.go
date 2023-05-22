@@ -55,7 +55,7 @@ func Run(tasks []Task, n, m int) error {
 	close(ch)
 	wg.Wait()
 
-	if countErr.Read() >= m {
+	if countErr.Read() >= m || m <= 0 {
 		fmt.Println("Errors count: ", countErr.err)
 		return ErrErrorsLimitExceeded
 	}
