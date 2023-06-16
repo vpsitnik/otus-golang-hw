@@ -109,4 +109,47 @@ func TestPipeline(t *testing.T) {
 		}
 		require.Equal(t, []int{25}, result)
 	})
+
+	t.Run("Abort now", func(t *testing.T) {
+		in := make(Bi)
+		data := []int{10, 20, 30, 40, 50, 60, 70, 80, 90}
+		done := make(Bi)
+
+		go func() {
+			for _, v := range data {
+				in <- v
+			}
+			close(in)
+		}()
+
+		close(done)
+
+		result := make([]string, 0, 10)
+		for s := range ExecutePipeline(in, done, stages...) {
+			result = append(result, s.(string))
+		}
+
+		require.Len(t, result, 0)
+	})
+
+	t.Run("Zero stages", func(t *testing.T) {
+		in := make(Bi)
+		data := []int{10, 20, 30, 40, 50, 60, 70, 80, 90}
+		zStages := []Stage{}
+
+		go func() {
+			for _, v := range data {
+				in <- v
+			}
+			close(in)
+		}()
+
+		result := make([]int, 0, 10)
+		for s := range ExecutePipeline(in, nil, zStages...) {
+			result = append(result, s.(int))
+		}
+
+		require.Len(t, result, 9)
+		require.Equal(t, []int{10, 20, 30, 40, 50, 60, 70, 80, 90}, result)
+	})
 }
