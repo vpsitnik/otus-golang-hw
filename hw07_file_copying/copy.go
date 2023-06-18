@@ -5,6 +5,9 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 var (
@@ -56,15 +59,27 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		limit = size - offset
 	}
 
+	// start new bar
+	bar := pb.Full.Start64(limit)
+	bar.Set(pb.Bytes, true)
+	bar.SetRefreshRate(time.Nanosecond)
+	bar.Set(pb.SIBytesPrefix, true)
+
 	if _, err := fileFrom.Seek(offset, io.SeekStart); err != nil {
 		log.Panic(err)
 		return ErrUnsupportedFile
 	}
 
-	if _, err := io.CopyN(fileTo, fileFrom, limit); err != nil {
+	// create proxy reader
+	barReader := bar.NewProxyReader(fileFrom)
+
+	if _, err := io.CopyN(fileTo, barReader, limit); err != nil {
 		log.Panic(err)
 		return ErrUnsupportedFile
 	}
+
+	// finish bar
+	bar.Finish()
 
 	return nil
 }
