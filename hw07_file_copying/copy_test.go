@@ -57,13 +57,32 @@ func TestCopy(t *testing.T) {
 		}
 	})
 
-	t.Run("Negative case with big offset", func(t *testing.T) {
+	t.Run("Negative case with big offset value", func(t *testing.T) {
 		var offset int64 = 7000
 		var limit int64 = 0
 
 		err:=Copy(input, output, offset, limit)
+		defer os.Remove(output)
 
 		require.Truef(t, errors.Is(err, ErrOffsetExceedsFileSize), "actual err - %v", err)
+
+	})
+
+	t.Run("Case with big limit value", func(t *testing.T) {
+		var offset int64 = 0
+		var limit int64 = 10000000
+
+		err:=Copy(input, output, offset, limit)
+		require.NoError(t, err)
+		defer os.Remove(output)
+
+		fileIn, err := os.Stat(input)
+		require.NoError(t, err)
+
+		fileOut, err := os.Stat(output)
+		require.NoError(t, err)
+
+		require.Equal(t, fileIn.Size(), fileOut.Size())
 
 	})
 }
