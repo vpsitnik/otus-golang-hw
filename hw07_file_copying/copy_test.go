@@ -2,10 +2,10 @@ package main
 
 import (
 	"crypto/md5"
+	"errors"
 	"io"
 	"os"
 	"testing"
-	"errors"
 
 	"github.com/stretchr/testify/require"
 )
@@ -59,20 +59,19 @@ func TestCopy(t *testing.T) {
 
 	t.Run("Negative case with big offset value", func(t *testing.T) {
 		var offset int64 = 7000
-		var limit int64 = 0
+		var limit int64
 
-		err:=Copy(input, output, offset, limit)
+		err := Copy(input, output, offset, limit)
 		defer os.Remove(output)
 
 		require.Truef(t, errors.Is(err, ErrOffsetExceedsFileSize), "actual err - %v", err)
-
 	})
 
 	t.Run("Case with big limit value", func(t *testing.T) {
-		var offset int64 = 0
+		var offset int64
 		var limit int64 = 10000000
 
-		err:=Copy(input, output, offset, limit)
+		err := Copy(input, output, offset, limit)
 		require.NoError(t, err)
 		defer os.Remove(output)
 
@@ -83,6 +82,29 @@ func TestCopy(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, fileIn.Size(), fileOut.Size())
+	})
 
+	t.Run("Negative case with unsupported source file type", func(t *testing.T) {
+		const (
+			random = "/dev/urandom"
+			null   = "/dev/null"
+		)
+
+		var offset int64
+		var limit int64
+
+		err := Copy(random, null, offset, limit)
+
+		require.Truef(t, errors.Is(err, ErrUnsupportedFile), "actual err - %v", err)
+	})
+
+	t.Run("Negative case with unsupported destination file", func(t *testing.T) {
+		out := ""
+		var offset int64
+		var limit int64
+
+		err := Copy(input, out, offset, limit)
+
+		require.Truef(t, errors.Is(err, ErrUnsupportedFile), "actual err - %v", err)
 	})
 }

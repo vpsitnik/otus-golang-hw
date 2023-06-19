@@ -20,9 +20,8 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	fileFrom, err := os.Open(fromPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			log.Panicf("File %v is not exist\n", fromPath)
+			log.Printf("File %v is not exist\n", fromPath)
 		}
-		log.Panic(err)
 		return ErrUnsupportedFile
 	}
 	defer fileFrom.Close()
@@ -30,7 +29,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	// create file for copy
 	fileTo, err := os.Create(toPath)
 	if err != nil {
-		log.Panicf("Failed to create file %v with error: %v\n", toPath, err)
+		log.Printf("Failed to create file %v with error: %v\n", toPath, err)
 		return ErrUnsupportedFile
 	}
 	defer fileTo.Close()
@@ -38,7 +37,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	// get FileInfo
 	fi, err := fileFrom.Stat()
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
 		return ErrUnsupportedFile
 	}
 
@@ -66,7 +65,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	bar.Set(pb.SIBytesPrefix, true)
 
 	if _, err := fileFrom.Seek(offset, io.SeekStart); err != nil {
-		log.Panic(err)
+		log.Println(err)
 		return ErrUnsupportedFile
 	}
 
@@ -74,7 +73,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	barReader := bar.NewProxyReader(fileFrom)
 
 	if _, err := io.CopyN(fileTo, barReader, limit); err != nil {
-		log.Panic(err)
+		log.Println(err)
 		return ErrUnsupportedFile
 	}
 
