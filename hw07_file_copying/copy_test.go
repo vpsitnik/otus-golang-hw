@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"testing"
+	"errors"
 
 	"github.com/stretchr/testify/require"
 )
@@ -54,5 +55,15 @@ func TestCopy(t *testing.T) {
 
 			require.Equal(t, hOutput, hValidOut)
 		}
+	})
+
+	t.Run("Negative case with big offset", func(t *testing.T) {
+		var offset int64 = 7000
+		var limit int64 = 0
+
+		err:=Copy(input, output, offset, limit)
+
+		require.Truef(t, errors.Is(err, ErrOffsetExceedsFileSize), "actual err - %v", err)
+
 	})
 }

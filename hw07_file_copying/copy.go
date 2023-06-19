@@ -51,7 +51,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 
 	// compare offset and file size
 	if offset > size {
-		log.Panicf("Offset value: %v is bigger than file size: %v\n", offset, size)
+		log.Printf("Offset value: %v is bigger than file size: %v\n", offset, size)
 		return ErrOffsetExceedsFileSize
 	}
 
