@@ -1,5 +1,7 @@
 package hw06pipelineexecution
 
+import "fmt"
+
 type (
 	In  = <-chan interface{}
 	Out = In
@@ -9,6 +11,30 @@ type (
 type Stage func(in In) (out Out)
 
 func ExecutePipeline(in In, done In, stages ...Stage) Out {
-	// Place your code here.
-	return nil
+	out := in
+
+	for _, stage := range stages {
+		outRC := make(Bi)
+
+		outStage := stage(out)
+
+		go func() {
+			defer close(outRC)
+			for {
+				select {
+				case <-done:
+					return
+				case value, ok := <-outStage:
+					if !ok {
+						fmt.Println("Not ok, exiting!")
+						return
+					}
+					outRC <- value
+				}
+			}
+		}()
+
+		out = outRC
+	}
+	return out
 }
