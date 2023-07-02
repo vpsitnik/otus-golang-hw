@@ -71,7 +71,7 @@ func ReadEnv(filePath string) (EnvValue, error) {
 		return EnvValue{"", true}, err
 	}
 
-	envVal = strings.ReplaceAll(strings.TrimRight(envVal, " \t"), "0x00", "\n")
+	envVal = strings.ReplaceAll(strings.TrimRight(envVal, " \t"), "\x00", "\n")
 	return EnvValue{envVal, false}, nil
 }
 

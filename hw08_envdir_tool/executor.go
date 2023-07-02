@@ -18,8 +18,9 @@ func RunCmd(cmd []string, env Environment) (returnCode int) {
 	// process environments
 	ProcessEnv(env)
 
-	command.Stderr = os.Stderr
+	command.Stdin = os.Stdin
 	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
 
 	if err := command.Run(); err != nil {
 		log.Println(err)
