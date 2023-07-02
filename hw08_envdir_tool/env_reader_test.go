@@ -2,22 +2,24 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestReadDir(t *testing.T) {
-	const dataPath = "./testdata/env"
+const dataPath = "./testdata/env"
 
-	expectedMap := Environment{
-		"BAR":   {Value: "bar", NeedRemove: false},
-		"EMPTY": {Value: "", NeedRemove: false},
-		"FOO": {Value: `   foo
+var expectedMap = Environment{
+	"BAR":   {Value: "bar", NeedRemove: false},
+	"EMPTY": {Value: "", NeedRemove: false},
+	"FOO": {Value: `   foo
 with new line`, NeedRemove: false},
-		"HELLO": {Value: "\"hello\"", NeedRemove: false},
-		"UNSET": {Value: "", NeedRemove: true},
-	}
+	"HELLO": {Value: "\"hello\"", NeedRemove: false},
+	"UNSET": {Value: "", NeedRemove: true},
+}
+
+func TestReadDir(t *testing.T) {
 
 	t.Run("Case equal compare testdata for ReadDir", func(t *testing.T) {
 		envResult, err := ReadDir(dataPath)
@@ -25,6 +27,13 @@ with new line`, NeedRemove: false},
 		require.Equal(t, expectedMap, envResult)
 	})
 
+	t.Run("Negative case with uncorrect dir path", func(t *testing.T) {
+		_, err := ReadDir("/tmp123_nonexisting")
+		require.Error(t, err)
+	})
+}
+
+func TestProcessEnv(t *testing.T) {
 	t.Run("Case set and unset environments", func(t *testing.T) {
 		ProcessEnv(expectedMap)
 
@@ -61,9 +70,20 @@ with new line`, NeedRemove: false},
 		_, ok := os.LookupEnv(envKey)
 		require.False(t, ok)
 	})
+}
 
-	t.Run("Negative case with uncorrect dir path", func(t *testing.T) {
-		_, err := ReadDir("/tmp123_nonexisting")
+func TestReadEnv(t *testing.T) {
+	t.Run("Case with environment files", func(t *testing.T) {
+		for envName, envValue := range expectedMap {
+			resultEnv, err := ReadEnv(filepath.Join(dataPath, envName))
+			require.NoError(t, err)
+			require.Equal(t, envValue, resultEnv)
+		}
+	})
+
+	t.Run("Negative case with environment files", func(t *testing.T) {
+		resultEnv, err := ReadEnv("testdata/env/BAR=")
 		require.Error(t, err)
+		require.Equal(t, EnvValue{"", true}, resultEnv)
 	})
 }
