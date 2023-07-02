@@ -20,7 +20,6 @@ with new line`, NeedRemove: false},
 }
 
 func TestReadDir(t *testing.T) {
-
 	t.Run("Case equal compare testdata for ReadDir", func(t *testing.T) {
 		envResult, err := ReadDir(dataPath)
 		require.NoError(t, err)
