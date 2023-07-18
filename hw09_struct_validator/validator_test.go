@@ -71,7 +71,7 @@ func TestValidate(t *testing.T) {
 				Age:    21,
 				Email:  "jamesrodrig12309@gmail.com",
 				Role:   "stuff",
-				Phones: []string{"79817651231", "7981345678344111"},
+				Phones: []string{"79817651231"},
 			},
 			ValidationErrors{
 				ValidationError{
@@ -179,6 +179,7 @@ func TestValidate(t *testing.T) {
 
 				if valErr, ok := err.(ValidationErrors); ok { //nolint: errorlint
 					expectValErr := tt.expectedErr.(ValidationErrors) //nolint: errorlint
+					require.Equal(t, len(expectValErr), len(valErr))
 					for index, errEntry := range valErr {
 						expected := expectValErr[index]
 						require.True(t, errors.Is(errEntry.Err, expected.Err))
