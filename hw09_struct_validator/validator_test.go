@@ -175,8 +175,6 @@ func TestValidate(t *testing.T) {
 			err := Validate(tt.in)
 
 			if errors.As(err, &validError) && err.Error() != "" {
-				// log.Printf("Expected: %v\nActual: %v", tt.expectedErr, err)
-
 				if valErr, ok := err.(ValidationErrors); ok { //nolint: errorlint
 					expectValErr := tt.expectedErr.(ValidationErrors) //nolint: errorlint
 					require.Equal(t, len(expectValErr), len(valErr))
