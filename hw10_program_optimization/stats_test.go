@@ -50,10 +50,10 @@ func TestGetDomainStat(t *testing.T) {
 		require.Equal(t, DomainStat{}, result)
 	})
 
-	t.Run("no email field", func(t *testing.T) {
+	t.Run("negative case: no email field", func(t *testing.T) {
 		data = `{"Id":6,"Name":"Marc Andre","Username":"Fishman","Phone":"128-34-12","Password":"dfk023","Address":"Brooklyn"}`
-		result, err := GetDomainStat(bytes.NewBufferString(data), "com")
-		require.NoError(t, err)
-		require.Equal(t, DomainStat{}, result)
+		_, err := GetDomainStat(bytes.NewBufferString(data), "com")
+		require.Error(t, err)
+		require.Equal(t, "no email field", err.Error())
 	})
 }

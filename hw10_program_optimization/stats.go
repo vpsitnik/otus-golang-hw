@@ -2,6 +2,7 @@ package hw10programoptimization
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"strings"
 
@@ -31,6 +32,10 @@ func countDomains(r io.Reader, domain string) (DomainStat, error) {
 
 	for scanner.Scan() {
 		email := fastjson.GetString(scanner.Bytes(), "Email")
+
+		if email == "" {
+			return nil, errors.New("no email field")
+		}
 
 		if strings.Contains(email, domain) {
 			result[strings.ToLower(strings.SplitN(email, "@", 2)[1])]++
