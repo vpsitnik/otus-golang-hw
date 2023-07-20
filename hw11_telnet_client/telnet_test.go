@@ -62,4 +62,21 @@ func TestTelnetClient(t *testing.T) {
 
 		wg.Wait()
 	})
+
+	t.Run("negative case: invalid port", func(t *testing.T) {
+		timeout, _ := time.ParseDuration("10s")
+		in := &bytes.Buffer{}
+		out := &bytes.Buffer{}
+		client := NewTelnetClient("127.0.0.1:100000", timeout, io.NopCloser(in), out)
+		require.Error(t, client.Connect())
+	})
+
+	t.Run("negative case: unresolved", func(t *testing.T) {
+		timeout, _ := time.ParseDuration("10s")
+		in := &bytes.Buffer{}
+		out := &bytes.Buffer{}
+		client := NewTelnetClient("goo0le5.com:443", timeout, io.NopCloser(in), out)
+
+		require.Error(t, client.Connect())
+	})
 }
