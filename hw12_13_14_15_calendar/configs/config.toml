@@ -1,5 +1,5 @@
 [logger]
-level = "ERROR"
+level = "INFO"
 
 [database]
 host = "127.0.0.1"
