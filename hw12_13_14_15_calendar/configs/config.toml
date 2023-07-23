@@ -1,5 +1,9 @@
 [logger]
-level = "INFO"
+level = "ERROR"
 
-# TODO
-# ...
+[database]
+host = "127.0.0.1"
+port = 5432
+database = "sampledb"
+user = "testuser"
+password = "testpass123"
