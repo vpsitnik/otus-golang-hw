@@ -31,8 +31,14 @@ func main() {
 
 	config := config.NewConfig(configFile)
 	logg := logger.New(config.Logger.Level)
+	var storage *Storage
 
-	storage := memorystorage.New()
+	if config.Db.Type == "sql" {
+		storage = storage.New()
+	} else {
+		storage = memorystorage.New()
+	}
+
 	calendar := app.New(logg, storage)
 
 	server := internalhttp.NewServer(logg, calendar)
