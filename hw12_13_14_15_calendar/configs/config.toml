@@ -4,6 +4,6 @@ level = "INFO"
 [database]
 host = "127.0.0.1"
 port = 5432
-database = "sampledb"
-user = "testuser"
-password = "testpass123"
+database = "calendar"
+user = "vijKe"
+password = "mYs3cr3tP@ss0"
