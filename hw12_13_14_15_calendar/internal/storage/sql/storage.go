@@ -47,7 +47,7 @@ func (s *Storage) Close() error {
 }
 
 func (s *Storage) AddEvent(event storage.Event) error {
-	query := `INSERT INTO events("title", "timestamp", "duration", "description", "owner") VALUES($1, $2, $3, $4, $5);`
+	query := `INSERT INTO events("title", "timestamp", "duration", "description", "owner") VALUES($1, NOW(), $3, $4, $5);`
 	result, err := s.db.ExecContext(s.ctx, query, event.Title, event.Timestamp, event.Duration, event.Description, event.Owner)
 	if err != nil {
 		s.logger.Error(err.Error())
