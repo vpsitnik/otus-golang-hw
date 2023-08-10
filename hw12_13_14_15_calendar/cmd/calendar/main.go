@@ -39,7 +39,7 @@ func main() {
 	if config.Db.Type == "sql" {
 		storage = sqlstorage.New(config.Db.Dsn, logg)
 	} else {
-		storage = memorystorage.New()
+		storage = memorystorage.New(logg)
 	}
 
 	calendar := app.New(logg, storage)

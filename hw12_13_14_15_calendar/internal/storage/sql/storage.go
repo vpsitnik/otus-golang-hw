@@ -26,6 +26,8 @@ func New(dsn string, logger Logger) storage.Storager {
 	if err != nil {
 		logger.Error(err.Error())
 	}
+
+	logger.Info("Open new SQL")
 	return &Storage{db: db, logger: logger}
 }
 
@@ -34,10 +36,13 @@ func (s *Storage) Connect() error {
 	if err != nil {
 		s.logger.Error(err.Error())
 	}
+
+	s.logger.Info("Connect SQL DB")
 	return err
 }
 
 func (s *Storage) Close() error {
+	s.logger.Info("Close SQL DB")
 	return s.db.Close()
 }
 
@@ -48,7 +53,7 @@ func (s *Storage) AddEvent(event storage.Event) error {
 		s.logger.Error(err.Error())
 	}
 	id, _ := result.LastInsertId()
-	s.logger.Debug("New event with ID: " + string(id))
+	s.logger.Info("New event with ID: " + string(id))
 
 	return err
 }
@@ -60,7 +65,7 @@ func (s *Storage) DeleteEvent(id int64) error {
 		s.logger.Error(err.Error())
 	}
 	rows, _ := result.RowsAffected()
-	s.logger.Debug("Affected rows: " + string(rows))
+	s.logger.Info("Affected rows: " + string(rows))
 	return err
 }
 
@@ -71,7 +76,7 @@ func (s *Storage) UpdateEvent(event storage.Event) error {
 		s.logger.Error(err.Error())
 	}
 	rows, _ := result.RowsAffected()
-	s.logger.Debug("Affected rows: " + string(rows))
+	s.logger.Info("Affected rows: " + string(rows))
 	return err
 }
 
@@ -85,6 +90,6 @@ func (s *Storage) ListEventsByOwner(owner string) ([]storage.Event, error) {
 		return events, err
 	}
 	rows, _ := result.RowsAffected()
-	s.logger.Debug("Affected rows: " + string(rows))
+	s.logger.Info("Affected rows: " + string(rows))
 	return events, nil
 }
