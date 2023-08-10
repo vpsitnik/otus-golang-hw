@@ -3,8 +3,4 @@ level = "INFO"
 
 [database]
 type = "sql"
-host = "127.0.0.1"
-port = 5432
-database = "calendar"
-user = "vijKe"
-password = "mYs3cr3tP@ss0"
+dsn="postgres://vijKe:mYs3cr3tP@ss0@127.0.0.1:5432/calendar?sslMode=disable"

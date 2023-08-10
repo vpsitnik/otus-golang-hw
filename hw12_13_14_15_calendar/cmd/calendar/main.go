@@ -12,7 +12,9 @@ import (
 	"github.com/vpsitnik/otus-golang-hw/hw12_13_14_15_calendar/internal/config"
 	"github.com/vpsitnik/otus-golang-hw/hw12_13_14_15_calendar/internal/logger"
 	internalhttp "github.com/vpsitnik/otus-golang-hw/hw12_13_14_15_calendar/internal/server/http"
+	storages "github.com/vpsitnik/otus-golang-hw/hw12_13_14_15_calendar/internal/storage"
 	memorystorage "github.com/vpsitnik/otus-golang-hw/hw12_13_14_15_calendar/internal/storage/memory"
+	sqlstorage "github.com/vpsitnik/otus-golang-hw/hw12_13_14_15_calendar/internal/storage/sql"
 )
 
 var configFile string
@@ -31,10 +33,11 @@ func main() {
 
 	config := config.NewConfig(configFile)
 	logg := logger.New(config.Logger.Level)
-	var storage *Storage
+
+	var storage storages.Storager
 
 	if config.Db.Type == "sql" {
-		storage = storage.New()
+		storage = sqlstorage.New(config.Db.Dsn, logg)
 	} else {
 		storage = memorystorage.New()
 	}

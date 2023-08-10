@@ -16,12 +16,8 @@ type LoggerConf struct {
 }
 
 type DatabaseConf struct {
-	Type     string
-	Host     string
-	Port     int
-	Database string
-	User     string
-	Password string
+	Type string
+	Dsn  string
 }
 
 func NewConfig(configFile string) *Config {
@@ -37,12 +33,8 @@ func NewConfig(configFile string) *Config {
 			Level: viper.GetString("logger.level"),
 		},
 		Db: &DatabaseConf{
-			Type:     viper.GetString("database.type"),
-			Host:     viper.GetString("database.host"),
-			Port:     viper.GetString("database.port"),
-			Database: viper.GetString("database.database"),
-			User:     viper.GetString("database.user"),
-			Password: viper.GetString("database.password"),
+			Type: viper.GetString("database.type"),
+			Dsn:  viper.GetString("database.dsn"),
 		},
 	}
 }
